@@ -1,4 +1,4 @@
-# type-db
+# typing-db
 
 [experimental] Another in-memory database using Remeda
 
@@ -21,7 +21,7 @@
 ## Basic usage
 
 ```typescript
-import { FileAdaptor, TypeDB, R, types } from 'type-db'
+import { FileAdaptor, TypeDB, R, types } from 'typing-db'
 
 const adaptor = new FileAdaptor({
   fileName: 'db.json',
