@@ -7,12 +7,12 @@
 ⚠ The following **will** be implemented.
 
 - Type-safe: Works nicely with TypeScript
-- Asynchronous: No synchronous API
 - Extensible: Save data to anywhere with custom adaptors
-- Functional: Rely on Remeda to pipe & filter architecture
-- Sensible: Adds `id` by default
+- Portable: Similar to Knex
+- Sensible: Adds `id`, `createdAt`, `updatedAt` by default
 - Null-safe: Checks null if configured
 - Relational: Supports basic `join`
+- Asynchronous: No synchronous API
 
 # Usage
 
@@ -54,7 +54,7 @@ async function run() {
 
   const user = db.table('users').whereNotNull('bio').join('posts').first()
 
-  console.log(users)
+  console.log(user)
 }
 
 run()
@@ -67,8 +67,10 @@ Output:
   name: '',
   email: 'ketsume0211@gmail.com',
   posts: [
-    userId: 'Oa83eVai3',
-    content: 'Hello World',
-  ]
+    {
+      userId: 'Oa83eVai3',
+      content: 'Hello World',
+    },
+  ],
 }
 ```
