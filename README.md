@@ -31,13 +31,14 @@ const db = new TypeDB({
   adaptor,
   schema: {
     users: {
-      email: types.string.unique,
-      name: types.string.defaultTo(''),
-      bio: types.nullable.string,
+      email: types.string().unique(),
+      name: types.string().defaultTo(''),
+      bio: types.string().nullable(),
+      birthDate: types.date().nullable(),
     },
     posts: {
-      userId: types.string,
-      content: types.string.defaultTo(''),
+      userId: types.string(),
+      content: types.string().defaultTo(''),
     },
   },
 })
@@ -68,7 +69,7 @@ Output:
   email: 'ketsume0211@gmail.com',
   posts: [
     {
-      userId: 'Oa83eVai3',
+      userId: 'Oa83eVai5',
       content: 'Hello World',
     },
   ],
