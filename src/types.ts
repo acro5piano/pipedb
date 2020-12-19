@@ -1,25 +1,45 @@
-// Utility type
-declare type ValueOf<T> = T[keyof T]
-declare type ElementType<
-  T extends ReadonlyArray<unknown>
-> = T extends ReadonlyArray<infer ElementType> ? ElementType : never
+type LiteralType = 'number' | 'string' | 'boolean'
 
 export class types {
-  static get number(): number {
-    return 0
+  type: LiteralType
+
+  constructor(type: LiteralType) {
+    this.type = type
   }
 
-  static get string(): string {
-    return ''
+  static number(): number {
+    return new types('number') as any
   }
 
-  static get boolean(): boolean {
-    return false
+  static string(): string {
+    return new types('string') as any
   }
 
-  static nullable: {
-    number?: number
-    string?: string
-    boolean?: boolean
-  } = types
+  static boolean(): boolean {
+    return new types('boolean') as any
+  }
+
+  static nullable() {
+    return nullable
+  }
+}
+
+export class nullable {
+  type: LiteralType
+
+  constructor(type: LiteralType) {
+    this.type = type
+  }
+
+  static number(): number | undefined {
+    return new nullable('number') as any
+  }
+
+  static string(): string | undefined {
+    return new nullable('string') as any
+  }
+
+  static boolean(): boolean | undefined {
+    return new nullable('boolean') as any
+  }
 }

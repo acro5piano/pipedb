@@ -1,6 +1,7 @@
 import { Adaptor } from './adaptors'
 import { randomString } from 'remeda'
-import { PickByValue } from 'utility-types'
+import { OmitUndefined } from './utils'
+import { Schema } from './Schema'
 
 export interface TypeDBConstruct<T> {
   adaptor: Adaptor
@@ -8,17 +9,20 @@ export interface TypeDBConstruct<T> {
   defaultValue?: T
 }
 
-export class TypeDB<T> {
-  schema: T
+export class DB<T> {
+  schema: Schema<T>
   data: T
   adaptor: Adaptor
-  defaultValue?: T
 
   constructor(args: TypeDBConstruct<T>) {
+    const schema = new Schema(args.schema)
     this.adaptor = args.adaptor
-    this.schema = args.schema
-    this.data = args.schema
-    this.defaultValue = args.defaultValue
+    this.schema = schema
+    if (args.defaultValue) {
+      this.data = args.defaultValue
+    } else {
+      this.data = schema.getInitialData()
+    }
   }
 
   async init() {
@@ -28,19 +32,20 @@ export class TypeDB<T> {
 
   table<K extends keyof T>(tableName: K) {
     // @ts-ignore
-    return new Query<T[K]>(this.data[tableName])
+    return new Query<T[K]>(this.data[tableName], this.schema, tableName)
   }
 }
 
-type OmitUndefined<T> = PickByValue<T, number | string | Date | boolean> &
-  Partial<T>
-
 export class Query<T> {
   table: T[]
+  schema: Schema<T>
   filters: Array<(t: T) => boolean> = []
+  tableName: string
 
-  constructor(table: T[]) {
+  constructor(table: T[], schema: Schema<T>, tableName: string) {
     this.table = table
+    this.schema = schema
+    this.tableName = tableName
   }
 
   then<N>(callback: (data: T[]) => N) {
@@ -51,6 +56,11 @@ export class Query<T> {
   }
 
   insert(data: OmitUndefined<T>) {
+    // @ts-ignore
+    this.schema.validate({
+      [this.tableName]: data,
+    })
+
     const createdAt = new Date()
     const _data = {
       id: randomString(16),

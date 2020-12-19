@@ -1,4 +1,3 @@
-export * from './TypeDB'
+export * from './DB'
 export * from './adaptors'
 export * from './types'
-export * as R from './remeda'
